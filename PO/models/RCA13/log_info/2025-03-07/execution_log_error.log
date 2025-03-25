@@ -1,0 +1,5 @@
+Error executing query for TESTCASE-15 : 400 Syntax error: Expected ")" or "," but got integer literal "23" at [1:1745]; reason: invalidQuery, location: query, message: Syntax error: Expected ")" or "," but got integer literal "23" at [1:1745]
+
+Location: US
+Job ID: 91bcf9f8-c184-4970-bc11-396ccfb9cecc
+

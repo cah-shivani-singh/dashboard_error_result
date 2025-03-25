@@ -1,0 +1,207 @@
+DDL VALIDATION IS PASSED - Column Name and Data Type is Matching
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 2 - No duplicate record should display for any line item in the invoice for same process date When searched with invoice date filter Then each cin-dc-Invoice No.-Invoiceline item no combination should have distinct record 
+ 
+Dups Validation IS PASSED - No Duplicates Found
+Records for Top 5 CINs
++----------------+-------+------+------------------+-----------------------+----------------+--------------------+
+| Invoice_Date   | CIN   | DC   | Invoice_Number   | INVOICE_LINE_NUMBER   | Process_Date   | CF_CIN_Short_Qty   |
++================+=======+======+==================+=======================+================+====================+
++----------------+-------+------+------------------+-----------------------+----------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 3 - Validate Ship_to_Location_Num for the shorted invoices When validate Ship_to_Location_Num for the unfilled invoices Then LF_Ship_to_Location_Num should not be 99 
+
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+------------------+-----------------------+-------+------+---------------------------+--------------------+
+| Process_Date   | Invoice_Date   | Invoice_Number   | INVOICE_LINE_NUMBER   | CIN   | DC   | LF_Ship_to_Location_Num   | CF_CIN_Short_Qty   |
++================+================+==================+=======================+=======+======+===========================+====================+
++----------------+----------------+------------------+-----------------------+-------+------+---------------------------+--------------------+
+
+
+TESTCASE 4 - Validate the rejection reason code for RCA 12 When validate rejection code for any given process date Then LF_VBAP_SHRT_ID is not (Z8, ZD) and Short_code is not (01,IO) 
+
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+-------+------+------------------+-----------------------+-------------------+-----------------+--------------------+
+| Process_Date   | Invoice_Date   | CIN   | DC   | Invoice_Number   | INVOICE_LINE_NUMBER   | LF_VBAP_SHRT_ID   | LF_Short_Code   | CF_CIN_Short_Qty   |
++================+================+=======+======+==================+=======================+===================+=================+====================+
++----------------+----------------+-------+------+------------------+-----------------------+-------------------+-----------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 5 - Validate the A-Class status for RCA 12 When validate A-Class status for any given process date Then Inv_Activity_Class_Code is in (A,M,R,U,W) 
+
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+------------------+-----------------------+-------+------+---------------------------+--------------------+
+| Process_Date   | Invoice_Date   | Invoice_Number   | INVOICE_LINE_NUMBER   | CIN   | DC   | Inv_Activity_Class_Code   | CF_CIN_Short_Qty   |
++================+================+==================+=======================+=======+======+===========================+====================+
++----------------+----------------+------------------+-----------------------+-------+------+---------------------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 6 - Validate ordered qty does not fall under demand issues When searched with a given process dates for the shorted invoices Then sum of order qty for ship to customer shorted invoice should be less than average + variance for last 16wks for ship to customer if its standard deviation was greater than 0 OR sum of order qty of Affiliation level1 shorted invoice should be less than average + variance for last 16wks for Affiliation level1 if its standard deviation was greater than 0 OR sum of order qty for ship to customer should be equal or less than 2 times of 16 week's average order if its standard deviation was 0 OR sum of order qty for Affiliation level1 should be equal or less than 2 times of 16 week's average order if its standard deviation was 0 OR sum of order qty for ship to customer should be equal or less than 3 times of 16 week's average of ship to customer OR sum of order qty for Affliation1 level should be equal or less than than 3 times of 16 week's average of Affliation1 level OR demand should be there from customer in last 8 weeks on cin-ship_to_Customer level 
+
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+------------------+-----------------------+-------+------+---------------------------------+--------------------------+--------------------------------------------+-------------------------------------+----------------------------------+-----------------------------------+------------------------------------+-------------------------------------+---------------------------------+--------------------+
+| Process_Date   | Invoice_Date   | Invoice_Number   | INVOICE_LINE_NUMBER   | CIN   | DC   | CF_Sum_Order_Qty_Ship_to_Cust   | CF_Sum_Order_Qty_Afltn   | CF_Average_16week_Order_Qty_Ship_to_Cust   | CF_Average_16week_Order_Qty_Afltn   | CF_STDDEV_Affiliation1_CIN_Qty   | CF_STDDEV2_Affiliation1_CIN_Qty   | CF_STDDEV_ShiptoCustomer_CIN_Qty   | CF_STDDEV2_ShiptoCustomer_CIN_Qty   | CF_Customer_Order_8weeks_Flag   | CF_CIN_Short_Qty   |
++================+================+==================+=======================+=======+======+=================================+==========================+============================================+=====================================+==================================+===================================+====================================+=====================================+=================================+====================+
++----------------+----------------+------------------+-----------------------+-------+------+---------------------------------+--------------------------+--------------------------------------------+-------------------------------------+----------------------------------+-----------------------------------+------------------------------------+-------------------------------------+---------------------------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 7 - Validate Ordered qty at DC level should be greater than order point qty When searched for any Process date at DC level Then Sum of order quantity for a DC should be greater than order point qty 
+
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+------------------+-----------------------+-------+------+-----------------------+------------------+--------------------+
+| Process_Date   | Invoice_Date   | Invoice_Number   | INVOICE_LINE_NUMBER   | CIN   | DC   | CF_Sum_Order_Qty_DC   | CF_Order_Point   | CF_CIN_Short_Qty   |
++================+================+==================+=======================+=======+======+=======================+==================+====================+
++----------------+----------------+------------------+-----------------------+-------+------+-----------------------+------------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 8 - Validate the sum order quantity for ship_to_customer for RCA 12 When sum of ordered qty of ship_to_customer calculated on distinct order date for a given process date Then Sum_Order_Qty_Ship_to_Cust in RCA12 table is calculated as sum of order qty on distinct order date on cin-dc-ship_to_customer level 
+
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+------------------+-----------------------+-------+------+-------------------------------+---------------------------------+----------+------------+--------------------------+--------------------+
+| Process_Date   | Invoice_Date   | Invoice_Number   | INVOICE_LINE_NUMBER   | CIN   | DC   | SAP_SHIP_TO_CUSTOMER_NUMBER   | CF_Sum_Order_Qty_Ship_to_Cust   | totsum   | countqty   | LF_CUSTOMER_ORDER_DATE   | CF_CIN_Short_Qty   |
++================+================+==================+=======================+=======+======+===============================+=================================+==========+============+==========================+====================+
++----------------+----------------+------------------+-----------------------+-------+------+-------------------------------+---------------------------------+----------+------------+--------------------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 9 - Validate the sum order quantity for affiliation for RCA 12 When sum of ordered qty of affiliation level1 calculated on distinct order date for a given process date Then CF_Sum_Order_Qty_Afltn in RCA12 table is calculated as sum of order qty on distinct order date on cin-dc-affiliation level1 
+
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+------------------+-----------------------+-------+------+--------------------+--------------------------+----------+------------+--------------------------+--------------------+
+| Process_Date   | Invoice_Date   | Invoice_Number   | INVOICE_LINE_NUMBER   | CIN   | DC   | LF_L01_AFLTN_NUM   | CF_Sum_Order_Qty_Afltn   | totsum   | countqty   | LF_CUSTOMER_ORDER_DATE   | CF_CIN_Short_Qty   |
++================+================+==================+=======================+=======+======+====================+==========================+==========+============+==========================+====================+
++----------------+----------------+------------------+-----------------------+-------+------+--------------------+--------------------------+----------+------------+--------------------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 10 - Validate the Average order quantity of last 16 weeks for ship_to_customer for RCA 12 When average ordered qty of ship_to_customer for the last 16 weeks calculated on distinct order date for a given process date Then CF_Average_16week_Order_Qty_Ship_to_Cust is calculated as the average of order quantity on distinct order date for a given cin and ship_to_customer_number 
+
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+------------------+-----------------------+-------+------+-------------------------------+--------------------------------------------+----------+------------+-----------+--------------------+
+| Process_Date   | Invoice_Date   | Invoice_Number   | INVOICE_LINE_NUMBER   | CIN   | DC   | SAP_SHIP_TO_CUSTOMER_NUMBER   | CF_Average_16week_Order_Qty_Ship_to_Cust   | totsum   | countqty   | Average   | CF_CIN_Short_Qty   |
++================+================+==================+=======================+=======+======+===============================+============================================+==========+============+===========+====================+
++----------------+----------------+------------------+-----------------------+-------+------+-------------------------------+--------------------------------------------+----------+------------+-----------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 11 - Validate the Average order quantity of last 16 weeks for affiliation for RCA 12 When average ordered qty of affiliation for the last 16 weeks calculated on distinct order date for a given process date Then CF_Average_16week_Order_Qty_Afltn is calculated as the average of order quantity on distinct order date for a given cin, dc and affiliation level 1 
+
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+------------------+-----------------------+-------+------+--------------------+-------------------------------------+----------+------------+-----------+--------------------+
+| Process_Date   | Invoice_Date   | Invoice_Number   | INVOICE_LINE_NUMBER   | CIN   | DC   | LF_L01_afltn_num   | CF_Average_16week_Order_Qty_Afltn   | totsum   | countqty   | Average   | CF_CIN_Short_Qty   |
++================+================+==================+=======================+=======+======+====================+=====================================+==========+============+===========+====================+
++----------------+----------------+------------------+-----------------------+-------+------+--------------------+-------------------------------------+----------+------------+-----------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 12 - Validate the Variance and Standard deviation of order quantity for ship_to_customer for RCA 12 When standard deviation of ordered qty of ship_to_customer calculated on distinct order date for a given process date And variance of ordered qty of ship_to_customer calculated on distinct order date for a given process date Then CF_STDDEV_ShiptoCustomer_CIN_Qty and CF_STDDEV2_ShiptoCustomer_CIN_Qty is calculated as the stdev and variance of order quantity on distinct order date for a given cin and ship_to_customer_number 
+
+Validationg : standard deviation of ordered qty of ship_to_customer calculated on distinct order date for a given process date
+Validation IS PASSED
+Validationg : variance of ordered qty of ship_to_customer calculated on distinct order date for a given process date
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+-------+------------------+-----------------------+-------------------------------+------+------------------------------------+-------------------------------------+--------------------+
+| Invoice_Date   | Process_Date   | CIN   | Invoice_Number   | INVOICE_LINE_NUMBER   | SAP_SHIP_TO_CUSTOMER_NUMBER   | DC   | CF_STDDEV_ShiptoCustomer_CIN_Qty   | CF_STDDEV2_ShiptoCustomer_CIN_Qty   | CF_CIN_Short_Qty   |
++================+================+=======+==================+=======================+===============================+======+====================================+=====================================+====================+
++----------------+----------------+-------+------------------+-----------------------+-------------------------------+------+------------------------------------+-------------------------------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 13 - Validate the Variance and Standard deviation order quantity for affiliation1 level for RCA 12 When standard deviation of ordered qty of affiliation1 level calculated on distinct order date for a given process date And variance of ordered qty of affiliation1 level calculated on distinct order date for a given process date Then CF_STDDEV_Affiliation1_CIN_Qty and CF_STDDEV2_Affiliation1_CIN_Qty is calculated as the stdev and variance of order quantity on distinct order date for a given cin, dc and affiliation1 level 
+
+Validationg : standard deviation of ordered qty of affiliation1 level calculated on distinct order date for a given process date
+Validation IS PASSED
+Validationg : variance of ordered qty of affiliation1 level calculated on distinct order date for a given process date
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+-------+------------------+-----------------------+--------------------+------+----------------------------------+-----------------------------------+--------------------+
+| Invoice_Date   | Process_Date   | CIN   | Invoice_Number   | INVOICE_LINE_NUMBER   | LF_L01_afltn_num   | DC   | CF_STDDEV_Affiliation1_CIN_Qty   | CF_STDDEV2_Affiliation1_CIN_Qty   | CF_CIN_Short_Qty   |
++================+================+=======+==================+=======================+====================+======+==================================+===================================+====================+
++----------------+----------------+-------+------------------+-----------------------+--------------------+------+----------------------------------+-----------------------------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 14 - Validate the demand in last 8 weeks for RCA 12 When validated whether any demand was there from customer in last 8 weeks on cin-ship_to_Customer level Then CF_Customer_Order_8weeks_flag is calculated as demand from customer in last 8 weeks 
+
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+-------+------------------+-----------------------+-------------------------------+------+---------------------------------+--------+------------+--------------------+
+| Invoice_Date   | Process_Date   | CIN   | Invoice_Number   | INVOICE_LINE_NUMBER   | SAP_SHIP_TO_CUSTOMER_NUMBER   | DC   | CF_Customer_Order_8weeks_Flag   | Flag   | countdte   | CF_CIN_Short_Qty   |
++================+================+=======+==================+=======================+===============================+======+=================================+========+============+====================+
++----------------+----------------+-------+------------------+-----------------------+-------------------------------+------+---------------------------------+--------+------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 15 - Validate the Sum of order quantity for DC for RCA 12 When validated Sum of order quantity for DC for RCA 12 Then calculated Sum of order quantity for DC should match CF_Sum_Order_Qty_DC in RCA12 table 
+
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+------------------+-----------------------+-------+------+-----------------------+----------+------------+--------------------+
+| Process_Date   | Invoice_Date   | Invoice_Number   | INVOICE_LINE_NUMBER   | CIN   | DC   | CF_Sum_Order_Qty_DC   | totsum   | countqty   | CF_CIN_Short_Qty   |
++================+================+==================+=======================+=======+======+=======================+==========+============+====================+
++----------------+----------------+------------------+-----------------------+-------+------+-----------------------+----------+------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+
+TESTCASE 17 - Validate the Order point Date for RCA 12 When validated Order point date for RCA 12 Then calculated Order point date should match CF_Order_Point_Date in RCA12 
+
+Validation IS PASSED
+Records for Top 5 CINs
++-------+------+-----------------------+------------------+---------------------+-------------+---------------------------+-----------------------+---------------+--------------+
+| cin   | dc   | invoice_line_number   | invoice_number   | Default_Lead_Time   | ORDER_DTE   | Order_Day_in_Week_Array   | CF_ORDER_POINT_DATE   | DAY_OF_WEEK   | is_present   |
++=======+======+=======================+==================+=====================+=============+===========================+=======================+===============+==============+
++-------+------+-----------------------+------------------+---------------------+-------------+---------------------------+-----------------------+---------------+--------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 18 - Validate short codes for the invoices in RCA12 is not null and matches with the source Billing Model When validate short codes for any given process date Then LF_Short_code should not be null for the shorted invoices And LF_Short_code matches Short_Code in Billing Model 
+
+Validationg : LF_Short_code should not be null for the shorted invoices
+Validation IS PASSED
+Validationg : LF_Short_code matches Short_Code in Billing Model
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+----------------+------------------+-----------------------+-------+------+-----------------+--------------------+
+| Process_Date   | Invoice_Date   | Invoice_Number   | INVOICE_LINE_NUMBER   | CIN   | DC   | LF_Short_Code   | CF_CIN_Short_Qty   |
++================+================+==================+=======================+=======+======+=================+====================+
++----------------+----------------+------------------+-----------------------+-------+------+-----------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+TESTCASE 19 - Verify the count of records displaying for RCA 12 When validated for any given process date Then number of invoices displaying for cin-dc for customers should be for CAH demand issue 
+
+Validation IS PASSED
+Records for Top 5 CINs
++----------------+-------+------+------------------+-----------------------+----------------+--------------------+
+| Invoice_Date   | CIN   | DC   | Invoice_Number   | INVOICE_LINE_NUMBER   | Process_Date   | CF_CIN_Short_Qty   |
++================+=======+======+==================+=======================+================+====================+
++----------------+-------+------+------------------+-----------------------+----------------+--------------------+
+------------------------------------------------------------------------------------------------------------------------
+
+
+Total Number of Test Cases : 18
+Total Number of pass Test Cases : 20
+Total Number of failed Test Cases : 0
+TESTCASE 1 - Check for schema 
+
+DDL VALIDATION IS PASSED - Column Name and Data Type is Matching
+------------------------------------------------------------------------------------------------------------------------

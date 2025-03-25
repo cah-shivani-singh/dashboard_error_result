@@ -1,0 +1,13 @@
+An unexpected error occured while reading the JSON file : [Errno 22] Invalid argument: 'PO\\models\\RCA11\rca11.json'
+TESTCASE - 11 : Error executing query : local variable 'query' referenced before assignment
+An unexpected error occured while reading the JSON file : [Errno 22] Invalid argument: 'PO\\models\\RCA11\rca11.json'
+TESTCASE - 11 : Error executing query : local variable 'query' referenced before assignment
+An unexpected error occured while reading the JSON file : [Errno 22] Invalid argument: 'PO\\models\\RCA11\rca11.json'
+TESTCASE - 11 : Error executing query : local variable 'query' referenced before assignment
+An unexpected error occured while reading the JSON file : [Errno 22] Invalid argument: 'PO\\models\\RCA11\rca11.json'
+TESTCASE - 11 : Error executing query : local variable 'query' referenced before assignment
+An unexpected error occured while reading the JSON file : [Errno 22] Invalid argument: 'PO\\models\\RCA11\rca11.json'
+TESTCASE - 11 : Error executing query : local variable 'query' referenced before assignment
+An unexpected error occured while reading the JSON file : [Errno 22] Invalid argument: 'PO\\models\\RCA11\rca11.json'
+TESTCASE - 11 : Error executing query : local variable 'query' referenced before assignment
+Unexpected error occured : validate_data() missing 3 required positional arguments: 'top_75_flag', 'test_case_no', and 'error_records_folder_name'

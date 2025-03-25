@@ -1,0 +1,72 @@
+{
+    "test_cases": {
+		"TEST_CASE_1": {
+			"description":"Check for schema",
+			"type": "Schema",
+			"sql_query":["SELECT lower(column_name) as column_name ,lower(data_type) as data_type FROM `{project_name}.{dataset_id}`.INFORMATION_SCHEMA.COLUMNS WHERE table_name='RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL'"],
+			"to_75":null
+
+		},
+   "TEST_CASE_2": {
+			"description":"Check for duplicates",
+			"type": "RCA",
+			"sql_query":["select b.* from (SELECT invoice_date,cin,dc,invoice_number,invoice_line_number,process_date,count(concat(CIN,'-',DC,'-',Invoice_Number,'-',invoice_line_number,'-',process_date,'-')) as count_cin_dc FROM `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' and CF_Product_In_Quarantine_RCA='Product in Quarantine - FDC' group by Invoice_Date,cin,dc,Invoice_Number,invoice_line_number,process_date having count_cin_dc>1)a inner join (select * from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL`)b on a.invoice_date=b.invoice_date and a.process_date=b.process_date and a.CIN=b.cin and a.dc=b.dc and a.invoice_number=b.invoice_number and a.invoice_line_number=b.invoice_line_number"],
+            "top_75":"SELECT distinct a.* FROM ( select * from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}') a inner join (select distinct cin,CF_CIN_Short_Qty from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' order by CF_CIN_Short_Qty desc limit 75)b on a.cin=b.cin"
+
+		},
+		"TEST_CASE_3": {
+			"description":"The supplier should be FDC, When searched for the supplier number Then it should not be equal to 90163",
+			"type": "RCA",
+			"sql_query":["select * from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' and CF_Product_In_Quarantine_RCA='Product in Quarantine - FDC' and inv_purchasing_supplier='90163'"],
+            "top_75":"SELECT distinct a.* FROM ( select * from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}') a inner join (select distinct cin,CF_CIN_Short_Qty from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' order by CF_CIN_Short_Qty desc limit 75)b on a.cin=b.cin"
+        },
+		"TEST_CASE_4": {
+			"description":"Blocked Qty for Quarantine block location is displaying correct results, When searched for all material-plant for any invoice date, Then blocked qty for Quarantine storage loc displaying should be equal to blocked quantity for the material for the dc at the time of order received ",
+			"type": "RCA",
+			"sql_query":["select * from (select Process_Date,Invoice_Date,Invoice_Number,INVOICE_LINE_NUMBER,CIN,DC,lf_customer_order_datetime,mard_matnr,mard_werks,CF_insme_qty,sum(mtrl_mvmt_qty) CF_insme_qty_calc from (SELECT distinct Process_Date,Invoice_Date,Invoice_Number,INVOICE_LINE_NUMBER,CIN,DC,LF_CUSTOMER_ORDER_DATETIME,MARD_MATNR,MARD_WERKS,CF_insme_qty,CF_Product_In_Quarantine_RCA from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where Process_Date='{process_date}' and CF_Product_In_Quarantine_RCA='Product in Quarantine - FDC')a left outer join (SELECT  safe_cast(mtrl_num as int) mtrl_num, safe_cast(trim(plant,'P') as int) plant,STRG_LOCATION,case when debit_credit_ind='H' then (-1)*mtrl_mvmt_qty else mtrl_mvmt_qty end mtrl_mvmt_qty, MVMT_TYPE, safe.parse_timestamp('%Y%m%d%H%M%S', mvmt_tim_stamp) mvmt_tim_stamp,debit_credit_ind  FROM `edna-data-pr-cah.VW_PHM_SC_LOGICAL_VIEWS_NP.VW_MATERIAL_MOVEMENT` where ifnull(safe_cast(VENDOR_NUM as int),0)<>57334 and STRG_LOCATION='0001' and ((MVMT_TYPE in ('101','102')  and STOCK_TYPE in ('X')) or ((MVMT_TYPE in ('321','350','713','714') and DEBIT_CREDIT_IND='H') or (MVMT_TYPE in ('322','349')))))b on a.CIN=b.mtrl_num and a.DC=b.plant and a.lf_customer_order_datetime>=b.mvmt_tim_stamp group by Process_Date,Invoice_Date,Invoice_Number,INVOICE_LINE_NUMBER,CIN,DC,lf_customer_order_datetime,mard_matnr,mard_werks,CF_insme_qty) where CF_insme_qty<>CF_insme_qty_calc"],
+            "top_75":"select distinct a.*,b.CF_CIN_Short_Qty from (select * from (select Process_Date,Invoice_Date,Invoice_Number,INVOICE_LINE_NUMBER,CIN,DC,lf_customer_order_datetime,mard_matnr,mard_werks,CF_insme_qty,sum(mtrl_mvmt_qty) CF_insme_qty_calc from (SELECT distinct Process_Date,Invoice_Date,Invoice_Number,INVOICE_LINE_NUMBER,CIN,DC,LF_CUSTOMER_ORDER_DATETIME,MARD_MATNR,MARD_WERKS,CF_insme_qty,CF_Product_In_Quarantine_RCA from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where Process_Date='{process_date}' and CF_Product_In_Quarantine_RCA='Product in Quarantine - FDC')a left outer join (SELECT  safe_cast(mtrl_num as int) mtrl_num, safe_cast(trim(plant,'P') as int) plant,STRG_LOCATION,case when debit_credit_ind='H' then (-1)*mtrl_mvmt_qty else mtrl_mvmt_qty end mtrl_mvmt_qty, MVMT_TYPE, safe.parse_timestamp('%Y%m%d%H%M%S', mvmt_tim_stamp) mvmt_tim_stamp,debit_credit_ind  FROM `edna-data-pr-cah.VW_PHM_SC_LOGICAL_VIEWS_NP.VW_MATERIAL_MOVEMENT` where ifnull(safe_cast(VENDOR_NUM as int),0)<>57334 and STRG_LOCATION='0001' and ((MVMT_TYPE in ('101','102')  and STOCK_TYPE in ('X')) or ((MVMT_TYPE in ('321','350','713','714') and DEBIT_CREDIT_IND='H') or (MVMT_TYPE in ('322','349')))))b on a.CIN=b.mtrl_num and a.DC=b.plant and a.lf_customer_order_datetime>=b.mvmt_tim_stamp group by Process_Date,Invoice_Date,Invoice_Number,INVOICE_LINE_NUMBER,CIN,DC,lf_customer_order_datetime,mard_matnr,mard_werks,CF_insme_qty))a inner join (select distinct mard_matnr,CF_CIN_Short_Qty from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' order by cf_cin_short_qty desc limit 75)b on a.mard_matnr=b.mard_matnr"
+		},
+		"TEST_CASE_5": {
+			"description":"Scenario: Validate total blocked qty for Quarantine Storage Location should always be > 0, When searched for any invoice date, Then  CF_INSME_Qty > 0 ",
+			"type": "RCA",
+			"sql_query":["SELECT Process_Date, Invoice_Date, CIN, DC,Invoice_Number, INVOICE_LINE_NUMBER, CF_INSME_Qty FROM `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' and CF_Product_In_Quarantine_RCA='Product in Quarantine - FDC' and CF_INSME_Qty<=0"],
+            "top_75":"SELECT distinct a.* FROM ( select process_date,invoice_date,invoice_number,invoice_line_number,cin,dc,lf_customer_order_datetime,CF_INSME_Qty,CF_CIN_Short_Qty from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}') a inner join (select distinct cin,CF_CIN_Short_Qty from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' order by CF_CIN_Short_Qty desc limit 75)b on a.cin=b.cin"
+        },
+		"TEST_CASE_6": {
+			"description":"The blocked quantity in quarantine should be atleast half of the shorted quantity for an invoice,When searched for the blocked quantity in quarantine for a particular material-plantThen the blocked quantity (CF_INSME_Qty) >= 0.5*shorted quantity(CF_CIN_DC_SHORT_QTY)",
+			"type": "RCA",
+			"sql_query":["SELECT Process_Date, Invoice_Date, CIN, DC,Invoice_Number, INVOICE_LINE_NUMBER, CF_INSME_Qty, CF_CIN_DC_Short_Qty FROM `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' and CF_Product_In_Quarantine_RCA='Product in Quarantine - FDC' and CF_INSME_Qty<0.5*CF_CIN_DC_Short_Qty"],
+            "top_75":"SELECT distinct a.* FROM ( select process_date,invoice_date,invoice_number,invoice_line_number,cin,dc,lf_customer_order_datetime,CF_INSME_Qty,CF_CIN_DC_Short_Qty,CF_CIN_Short_Qty from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}') a inner join (select distinct cin,CF_CIN_Short_Qty from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' order by CF_CIN_Short_Qty desc limit 75)b on a.cin=b.cin"
+        },
+		"TEST_CASE_7": {
+			"description":"Sales orders in rca 3a table should not be rejected due to reasons other than a DC inventory issue, When searched for a particular sales order, Then the rejection condition should be 'Z6' or null, Then either lf_shrt_id<>'S' and lf_short_code<>'01' ",
+			"type": "RCA",
+			"sql_query":["select * from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' and CF_Product_In_Quarantine_RCA='Product in Quarantine - FDC' and not(ifnull(lf_short_code,'') not in ('01','IO','04','BR','BC') and ifnull(lf_vbap_shrt_id,'') not in ('ZD','Z8'))"],
+            "top_75":"SELECT distinct a.* FROM ( select process_date,invoice_date,invoice_number,invoice_line_number,cin,dc,CF_CIN_Short_Qty from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}') a inner join (select distinct cin,CF_CIN_Short_Qty from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' order by CF_CIN_Short_Qty desc limit 75)b on a.cin=b.cin"
+		},
+		"TEST_CASE_8": {
+			"description":"All invoices in the table should have short code as not null, When searched for a shorted invoice, Then the value of LF_Short_Code should match with the source, And LF_Short_Code should not be null",
+			"type": "RCA",
+			"sql_query":["Select Process_Date,Invoice_Date,Invoice_Number,INVOICE_LINE_NUMBER,CIN,DC,LF_Short_Code,Short_Code,D0_UPDATE_STP,cf_product_in_quarantine_rca FROM `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` join `{project_name}.{dataset_id}.CUSTOMER_INVOICE_CDL` on Invoice_Number=Invoice_Num and INVOICE_LINE_NUMBER=INVOICE_LINE_NUM and  ifnull(short_code,'') not in ('BR', 'BC', '04') where Process_Date='{process_date}' and CF_Product_In_Quarantine_RCA='Product in Quarantine - FDC' and ifnull(LF_Short_Code,'')<>ifnull(Short_Code,'') order by Invoice_Number,Invoice_Line_Number",
+                        "Select Process_Date,Invoice_Date,Invoice_Number,INVOICE_LINE_NUMBER,CIN,DC,LF_Short_Code FROM `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL`  where ifnull(LF_Short_Code,'')='' and Process_Date='{process_date}' and CF_Product_In_Quarantine_RCA='Product in Quarantine - FDC'"],
+            "top_75":"select distinct tc.*,cs.CF_CIN_Short_Qty from (select process_date,invoice_date,cin,dc,lf_short_code from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where  process_date='{process_date}' ) tc inner join (select distinct cin,CF_CIN_Short_Qty from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where  process_date='{process_date}' order by CF_CIN_Short_Qty desc limit 75)cs on tc.cin=cs.cin"
+
+		},
+		"TEST_CASE_9": {
+			"description":"Validate short qty for the identified invoice is due to Product in Quarantine, When searching for any specific Process date, Then total number of invoices in rca3a showing 'Product in Quarantine - FDC' matches the count of invoices where blocked quantity in quarantine>=0.5*short quantity",
+			"type": "RCA",
+			"sql_query":["select * from (SELECT  process_date,invoice_date,invoice_number,invoice_line_number,LF_CUSTOMER_ORDER_DATETIME,MARD_MATNR,MARD_WERKS,CF_INSME_Qty,lf_shrt_id,lf_short_code,cf_cin_dc_short_qty,inv_purchasing_supplier FROM `{project_name}.{dataset_id}.DATAPOINT_UNFILL_INVOICE_CDL` where process_date='{process_date}' and inv_purchasing_supplier<>'90163' and CF_INSME_Qty>=0.5*CF_CIN_DC_SHORT_QTY and (ifnull(lf_short_code,'') not in ('01','IO','BR', 'BC', '04') and ifnull(lf_vbap_shrt_id,'') not in ('ZD','Z8')))a full outer join (SELECT  process_date,invoice_date,invoice_number,invoice_line_number,LF_CUSTOMER_ORDER_DATETIME,MARD_MATNR,MARD_WERKS,cf_insme_qty,lf_shrt_id,lf_short_code,cf_cin_dc_short_qty,inv_purchasing_supplier FROM `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' and CF_Product_In_Quarantine_RCA='Product in Quarantine - FDC')b on a.invoice_number=b.invoice_number and a.invoice_line_number=b.invoice_line_number"],
+            "top_75":"SELECT distinct a.* FROM ( select process_date,invoice_date,invoice_number,invoice_line_number,lf_customer_order_datetime,cin,dc,CF_CIN_Short_Qty from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' ) a inner join (select distinct cin,CF_CIN_Short_Qty from `{project_name}.{dataset_id}.RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL` where process_date='{process_date}' order by CF_CIN_Short_Qty desc limit 75)b on a.cin=b.cin"
+		}	
+    },
+    "project_id": "edr-phm-ai-im-pr-cah",
+	"project_name":"edr-phm-ai-im-pr-cah",
+    "dataset_id": "UNFILLED_UNITS_DEV",
+    "key":"edr-phm-ai-im-pr-cah-fe45d3ea1bae.json",
+    "table_id": "RCA_UNFILL_PRODUCT_IN_QUARANTINE_CDL",
+	"alphabet_check_column_name": [],
+    "alphanumeric_check_column_name": [],
+    "length_check_column_name": [],
+    "null_check_column_name": [],
+    "numeric_check_column_name": []
+}

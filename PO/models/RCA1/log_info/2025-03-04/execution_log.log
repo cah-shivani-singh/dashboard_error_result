@@ -1,0 +1,8 @@
+TESTCASE 2 - No duplicate record displaying for each cin-dc,invoice number and supplier for any given invoice date  When searched with invoice date filter  Then each cin-dc,invoice number and supplier combination should have distinct record 
+ 
+There is error while executing query check execution_log.log file for more info
+------------------------------------------------------------------------------------------------------------------------
+TESTCASE 2 - No duplicate record displaying for each cin-dc,invoice number and supplier for any given invoice date  When searched with invoice date filter  Then each cin-dc,invoice number and supplier combination should have distinct record 
+ 
+There is error while executing query check execution_log.log file for more info
+------------------------------------------------------------------------------------------------------------------------
